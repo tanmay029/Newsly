@@ -32,48 +32,75 @@ class CustomTextField extends StatefulWidget {
 
 class _CustomTextFieldState extends State<CustomTextField> {
   bool _isObscured = true;
+  bool _isFocused = false;
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: widget.controller,
-      obscureText: widget.isPassword ? _isObscured : false,
-      keyboardType: widget.keyboardType,
-      validator: widget.validator,
-      maxLines: widget.isPassword ? 1 : widget.maxLines,
-      decoration: InputDecoration(
-        labelText: widget.label,
-        hintText: widget.hint,
-        prefixIcon: widget.prefixIcon != null 
-            ? Icon(widget.prefixIcon) 
-            : null,
-        suffixIcon: _buildSuffixIcon(),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          widget.label,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: Colors.grey.shade700,
+          ),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
+        SizedBox(height: 8),
+        TextFormField(
+          controller: widget.controller,
+          obscureText: widget.isPassword ? _isObscured : false,
+          keyboardType: widget.keyboardType,
+          validator: widget.validator,
+          maxLines: widget.isPassword ? 1 : widget.maxLines,
+          onTap: () => setState(() => _isFocused = true),
+          onFieldSubmitted: (value) => setState(() => _isFocused = false),
+          decoration: InputDecoration(
+            hintText: widget.hint ?? 'Enter ${widget.label.toLowerCase()}',
+            prefixIcon: widget.prefixIcon != null 
+                ? Icon(
+                    widget.prefixIcon,
+                    color: _isFocused ? Colors.blue.shade600 : Colors.grey.shade500,
+                  ) 
+                : null,
+            suffixIcon: _buildSuffixIcon(),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.grey.shade300),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.grey.shade300),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.blue.shade600, width: 2),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.red),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.red, width: 2),
+            ),
+            filled: true,
+            fillColor: Colors.grey.shade50,
+            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          ),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.blue, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.red),
-        ),
-        filled: true,
-        fillColor: Colors.grey.shade50,
-      ),
+      ],
     );
   }
 
   Widget? _buildSuffixIcon() {
     if (widget.isPassword) {
       return IconButton(
-        icon: Icon(_isObscured ? Icons.visibility : Icons.visibility_off),
+        icon: Icon(
+          _isObscured ? Icons.visibility_off : Icons.visibility,
+          color: Colors.grey.shade500,
+        ),
         onPressed: () {
           setState(() {
             _isObscured = !_isObscured;

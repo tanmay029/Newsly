@@ -16,7 +16,12 @@ class BookmarkController extends GetxController {
   }
 
   void loadBookmarks() {
-    _bookmarks.value = _storageService.getBookmarks();
+    try {
+      _bookmarks.value = _storageService.getBookmarks();
+    } catch (e) {
+      print('Error loading bookmarks: $e');
+      _bookmarks.value = [];
+    }
   }
 
   void toggleBookmark(Article article) {
@@ -29,36 +34,53 @@ class BookmarkController extends GetxController {
   }
 
   void addBookmark(Article article) {
-    _storageService.addBookmark(article);
-    loadBookmarks();
-    Get.snackbar(
-      'Bookmarked',
-      'Article saved to bookmarks',
-      duration: Duration(seconds: 2),
-    );
+    try {
+      _storageService.addBookmark(article);
+      loadBookmarks();
+      Get.snackbar(
+        'Bookmarked',
+        'Article saved to bookmarks',
+        duration: const Duration(seconds: 2),
+      );
+    } catch (e) {
+      print('Error adding bookmark: $e');
+    }
   }
 
   void removeBookmark(Article article) {
-    _storageService.removeBookmark(article);
-    loadBookmarks();
-    Get.snackbar(
-      'Removed',
-      'Article removed from bookmarks',
-      duration: Duration(seconds: 2),
-    );
+    try {
+      _storageService.removeBookmark(article);
+      loadBookmarks();
+      Get.snackbar(
+        'Removed',
+        'Article removed from bookmarks',
+        duration: const Duration(seconds: 2),
+      );
+    } catch (e) {
+      print('Error removing bookmark: $e');
+    }
   }
 
   bool isBookmarked(Article article) {
-    return _storageService.isBookmarked(article);
+    try {
+      return _storageService.isBookmarked(article);
+    } catch (e) {
+      print('Error checking bookmark status: $e');
+      return false;
+    }
   }
 
   void clearAllBookmarks() {
-    _storageService.saveBookmarks([]);
-    loadBookmarks();
-    Get.snackbar(
-      'Cleared',
-      'All bookmarks removed',
-      duration: Duration(seconds: 2),
-    );
+    try {
+      _storageService.saveBookmarks([]);
+      loadBookmarks();
+      Get.snackbar(
+        'Cleared',
+        'All bookmarks removed',
+        duration: const Duration(seconds: 2),
+      );
+    } catch (e) {
+      print('Error clearing bookmarks: $e');
+    }
   }
 }
