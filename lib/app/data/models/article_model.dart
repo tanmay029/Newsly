@@ -1,5 +1,4 @@
 class Article {
-  final String? id;
   final String title;
   final String description;
   final String? content;
@@ -11,7 +10,6 @@ class Article {
   final String category;
 
   Article({
-    this.id,
     required this.title,
     required this.description,
     this.content,
@@ -24,32 +22,55 @@ class Article {
   });
 
   factory Article.fromJson(Map<String, dynamic> json) {
-    return Article(
-      title: json['title']?.toString() ?? '',
-      description: json['description']?.toString() ?? '',
-      content: json['content']?.toString(),
-      urlToImage: json['urlToImage']?.toString(),
-      url: json['url']?.toString(),
-      source: json['source']?['name']?.toString() ?? 
-              json['source']?.toString() ?? 'Unknown',
-      author: json['author']?.toString(),
-      publishedAt: _parseDate(json['publishedAt']?.toString()),
-      category: json['category']?.toString() ?? 'General',
-    );
+    try {
+      return Article(
+        title: _safeString(json['title']),
+        description: _safeString(json['description']),
+        content: _safeString(json['content']),
+        urlToImage: _safeString(json['urlToImage']),
+        url: _safeString(json['url']),
+        source: _extractSource(json['source']),
+        author: _safeString(json['author']),
+        publishedAt: _parseDate(json['publishedAt']),
+        category: _safeString(json['category']),
+      );
+    } catch (e) {
+      print('Error creating Article from JSON: $e');
+      print('JSON  $json');
+      rethrow;
+    }
   }
 
-  static DateTime _parseDate(String? dateString) {
-    if (dateString == null) return DateTime.now();
+  static String _safeString(dynamic value) {
+    if (value == null) return '';
+    return value.toString();
+  }
+
+  static String _extractSource(dynamic sourceData) {
+    if (sourceData == null) return 'Unknown';
+    
+    if (sourceData is String) return sourceData;
+    
+    if (sourceData is Map) {
+      return sourceData['name']?.toString() ?? 'Unknown';
+    }
+    
+    return sourceData.toString();
+  }
+
+  static DateTime _parseDate(dynamic dateValue) {
+    if (dateValue == null) return DateTime.now();
+    
     try {
-      return DateTime.parse(dateString);
+      return DateTime.parse(dateValue.toString());
     } catch (e) {
+      print('Error parsing date: $dateValue');
       return DateTime.now();
     }
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'title': title,
       'description': description,
       'content': content,
@@ -60,20 +81,5 @@ class Article {
       'publishedAt': publishedAt.toIso8601String(),
       'category': category,
     };
-  }
-
-  Article copyWith({String? id}) {
-    return Article(
-      id: id ?? this.id,
-      title: title,
-      description: description,
-      content: content,
-      urlToImage: urlToImage,
-      url: url,
-      source: source,
-      author: author,
-      publishedAt: publishedAt,
-      category: category,
-    );
   }
 }

@@ -20,6 +20,14 @@ class ThemeController extends GetxController {
   void toggleTheme() {
     _isDarkMode.value = !_isDarkMode.value;
     _storageService.saveThemeMode(_isDarkMode.value);
+    
+    // CRITICAL: Use Get.changeThemeMode instead of Get.changeTheme
     Get.changeThemeMode(themeMode);
+    
+    // Force UI update
+    update();
+    
+    // Nuclear option if above doesn't work
+    Get.forceAppUpdate();
   }
 }

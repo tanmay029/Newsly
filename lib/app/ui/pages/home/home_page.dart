@@ -8,10 +8,6 @@ import 'package:newsly/app/data/models/article_model.dart';
 import 'package:newsly/app/routes/app_routes.dart';
 import 'package:shimmer/shimmer.dart';
 
-// import '../../controllers/home_controller.dart';
-// import '../../controllers/theme_controller.dart';
-// import '../../controllers/auth_controller.dart';
-// import '../../routes/app_routes.dart';
 import '../../widgets/article_card.dart';
 
 class HomePage extends GetView<HomeController> {
@@ -20,99 +16,141 @@ class HomePage extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: controller.refreshNews,
-          child: CustomScrollView(
-            slivers: [
-              _buildModernAppBar(),
-              _buildFeaturedSection(),
-              _buildCategoriesSection(),
-              _buildLiveNewsSection(),
-            ],
+    return Obx(() => Scaffold(
+          body: SafeArea(
+            child: RefreshIndicator(
+              onRefresh: controller.refreshNews,
+              child: CustomScrollView(
+                slivers: [
+                  _buildModernAppBar(),
+                  _buildFeaturedSection(),
+                  _buildCategoriesSection(),
+                  _buildLiveNewsSection(),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
-      bottomNavigationBar: _buildModernBottomNav(),
-      floatingActionButton: _buildFloatingSearchButton(),
-    );
+          bottomNavigationBar: _buildModernBottomNav(),
+          floatingActionButton: _buildFloatingSearchButton(),
+        ));
   }
 
   Widget _buildModernAppBar() {
-  return SliverAppBar(
-    expandedHeight: 140,
-    floating: false,
-    pinned: true,
-    elevation: 0,
-    flexibleSpace: FlexibleSpaceBar(
-      background: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.blue.shade600,
-              Colors.blue.shade800,
-              Colors.indigo.shade600,
-            ],
-          ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(20, 60, 20, 16), // Reduced bottom padding
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.end,
-            mainAxisSize: MainAxisSize.min, // Add this to prevent overflow
-            children: [
-              Flexible( // Wrap with Flexible
-                child: Obx(() => Text(
-                  'Good ${_getGreeting()}, ${authController.user?.displayName?.split(' ').first ?? 'Reader'}!',
-                  style: TextStyle(
-                    fontSize: 26, // Slightly reduced
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                )),
-              ),
-              SizedBox(height: 4),
-              Flexible( // Wrap with Flexible
-                child: Text(
-                  'Discover today\'s trending stories',
-                  style: TextStyle(
-                    fontSize: 14, // Slightly reduced
-                    color: Colors.white.withOpacity(0.9),
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+    return SliverAppBar(
+      expandedHeight: 150,
+      floating: false,
+      pinned: true,
+      elevation: 0,
+      backgroundColor:
+          Get.isDarkMode ? const Color(0xFF1F1F1F) : Colors.blue.shade600,
+      flexibleSpace: LayoutBuilder(
+        builder: (context, constraints) {
+          // Calculate collapse ratio
+          final expandedHeight = 120.0;
+          final minHeight = kToolbarHeight + MediaQuery.of(context).padding.top;
+          final currentHeight = constraints.maxHeight;
+
+          // Calculate how much the app bar has collapsed (0.0 = fully expanded, 1.0 = fully collapsed)
+          final collapseRatio =
+              ((expandedHeight - currentHeight) / (expandedHeight - minHeight))
+                  .clamp(0.0, 1.0);
+
+          return FlexibleSpaceBar(
+            title: Opacity(
+              opacity: collapseRatio, // Title opacity based on collapse ratio
+              child: Text(
+                'Newsly',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
                 ),
               ),
-            ],
-          ),
-        ),
+            ),
+            centerTitle: true,
+            titlePadding: EdgeInsets.only(bottom: 16),
+            background: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: Get.isDarkMode
+                      ? [
+                          const Color(0xFF1F1F1F),
+                          const Color(0xFF2C2C2C),
+                          const Color(0xFF1A1A1A),
+                        ]
+                      : [
+                          Colors.blue.shade600,
+                          Colors.blue.shade800,
+                          Colors.indigo.shade600,
+                        ],
+                ),
+              ),
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(20, 60, 20, 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Obx(() => Text(
+                                'Good ${_getGreeting()}, ${authController.user?.displayName?.split(' ').first ?? 'Reader'}!',
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              )),
+                        ),
+                        SizedBox(width: 12),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Obx(() => IconButton(
+                                icon: Icon(
+                                  themeController.isDarkMode
+                                      ? Icons.light_mode
+                                      : Icons.dark_mode,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                onPressed: themeController.toggleTheme,
+                                padding: EdgeInsets.all(8),
+                                constraints: BoxConstraints(
+                                  minWidth: 36,
+                                  minHeight: 36,
+                                ),
+                              )),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 6),
+                    Text(
+                      'Discover today\'s trending stories',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.white.withOpacity(0.9),
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
       ),
-    ),
-    actions: [
-      Container(
-        margin: EdgeInsets.only(right: 16),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Obx(() => IconButton(
-          icon: Icon(
-            themeController.isDarkMode ? Icons.light_mode : Icons.dark_mode,
-            color: Colors.white,
-          ),
-          onPressed: themeController.toggleTheme,
-        )),
-      ),
-    ],
-  );
-}
-
+    );
+  }
 
   String _getGreeting() {
     final hour = DateTime.now().hour;
@@ -158,12 +196,12 @@ class HomePage extends GetView<HomeController> {
             ),
           ),
           Container(
-            height: 280,
+            height: 200,
             child: Obx(() {
               if (controller.featuredArticles.isEmpty && controller.isLoading) {
                 return _buildFeaturedShimmer();
               }
-              
+
               return ListView.builder(
                 scrollDirection: Axis.horizontal,
                 padding: EdgeInsets.symmetric(horizontal: 20),
@@ -182,12 +220,13 @@ class HomePage extends GetView<HomeController> {
 
   Widget _buildEnhancedFeaturedCard(Article article, int index) {
     return Container(
-      width: 320,
+      width: 240,
       margin: EdgeInsets.only(right: 16),
       child: Hero(
         tag: 'featured_${article.title}',
         child: GestureDetector(
-          onTap: () => Get.toNamed(AppRoutes.ARTICLE_DETAIL, arguments: article),
+          onTap: () =>
+              Get.toNamed(AppRoutes.ARTICLE_DETAIL, arguments: article),
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
@@ -334,49 +373,54 @@ class HomePage extends GetView<HomeController> {
           Container(
             height: 50,
             child: Obx(() => ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              itemCount: controller.categories.length,
-              itemBuilder: (context, index) {
-                final category = controller.categories[index];
-                final isSelected = category == controller.selectedCategory;
-                
-                return GestureDetector(
-                  onTap: () => controller.selectCategory(category),
-                  child: AnimatedContainer(
-                    duration: Duration(milliseconds: 200),
-                    margin: EdgeInsets.only(right: 12),
-                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    decoration: BoxDecoration(
-                      gradient: isSelected
-                          ? LinearGradient(
-                              colors: [Colors.blue.shade600, Colors.blue.shade800],
-                            )
-                          : null,
-                      color: isSelected ? null : Colors.grey.shade100,
-                      borderRadius: BorderRadius.circular(25),
-                      boxShadow: isSelected
-                          ? [
-                              BoxShadow(
-                                color: Colors.blue.withOpacity(0.3),
-                                blurRadius: 8,
-                                offset: Offset(0, 2),
-                              ),
-                            ]
-                          : [],
-                    ),
-                    child: Text(
-                      category,
-                      style: TextStyle(
-                        color: isSelected ? Colors.white : Colors.black87,
-                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                        fontSize: 14,
+                  scrollDirection: Axis.horizontal,
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  itemCount: controller.categories.length,
+                  itemBuilder: (context, index) {
+                    final category = controller.categories[index];
+                    final isSelected = category == controller.selectedCategory;
+
+                    return GestureDetector(
+                      onTap: () => controller.selectCategory(category),
+                      child: AnimatedContainer(
+                        duration: Duration(milliseconds: 200),
+                        margin: EdgeInsets.only(right: 12),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        decoration: BoxDecoration(
+                          gradient: isSelected
+                              ? LinearGradient(
+                                  colors: [
+                                    Colors.blue.shade600,
+                                    Colors.blue.shade800
+                                  ],
+                                )
+                              : null,
+                          color: isSelected ? null : Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(25),
+                          boxShadow: isSelected
+                              ? [
+                                  BoxShadow(
+                                    color: Colors.blue.withOpacity(0.3),
+                                    blurRadius: 8,
+                                    offset: Offset(0, 2),
+                                  ),
+                                ]
+                              : [],
+                        ),
+                        child: Text(
+                          category,
+                          style: TextStyle(
+                            color: isSelected ? Colors.white : Colors.black87,
+                            fontWeight:
+                                isSelected ? FontWeight.w600 : FontWeight.w500,
+                            fontSize: 14,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                );
-              },
-            )),
+                    );
+                  },
+                )),
           ),
         ],
       ),
@@ -384,48 +428,47 @@ class HomePage extends GetView<HomeController> {
   }
 
   Widget _buildLiveNewsSection() {
-  return SliverToBoxAdapter(
-    child: Padding(
-      padding: EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.fiber_manual_record, color: Colors.red, size: 12),
-              SizedBox(width: 8),
-              Text(
-                'Latest Updates',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.fiber_manual_record, color: Colors.red, size: 12),
+                SizedBox(width: 8),
+                Text(
+                  'Latest Updates',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 20),
-          Obx(() {
-            if (controller.isLoading && controller.liveArticles.isEmpty) {
-              return _buildNewsShimmer();
-            }
-            
-            return ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: controller.liveArticles.length,
-              itemBuilder: (context, index) {
-                final article = controller.liveArticles[index];
-                return EnhancedArticleCard(article: article); // Removed index parameter
-              },
-            );
-          }),
-        ],
+              ],
+            ),
+            SizedBox(height: 20),
+            Obx(() {
+              if (controller.isLoading && controller.liveArticles.isEmpty) {
+                return _buildNewsShimmer();
+              }
+
+              return ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: controller.liveArticles.length,
+                itemBuilder: (context, index) {
+                  final article = controller.liveArticles[index];
+                  return EnhancedArticleCard(
+                      article: article); // Removed index parameter
+                },
+              );
+            }),
+          ],
+        ),
       ),
-    ),
-  );
-}
-
-
+    );
+  }
 
   Widget _buildNewsShimmer() {
     return ListView.builder(
@@ -475,57 +518,66 @@ class HomePage extends GetView<HomeController> {
   }
 
   Widget _buildModernBottomNav() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: Offset(0, -2),
+    return Obx(() {
+      // Wrap with Obx for theme reactivity
+      final isDark = themeController.isDarkMode;
+      return Container(
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF1F1F1F) : Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: isDark
+                  ? Colors.black.withOpacity(0.3)
+                  : Colors.black.withOpacity(0.1),
+              blurRadius: 15,
+              offset: const Offset(0, -3),
+            ),
+          ],
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
           ),
-        ],
-      ),
-      child: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: 0,
-        selectedItemColor: Colors.blue.shade600,
-        unselectedItemColor: Colors.grey.shade500,
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        selectedLabelStyle: TextStyle(fontWeight: FontWeight.w600),
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              // Already on home
-              break;
-            case 1:
-              Get.toNamed(AppRoutes.BOOKMARK);
-              break;
-            case 2:
-              Get.toNamed(AppRoutes.PROFILE);
-              break;
-          }
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_rounded),
-            activeIcon: Icon(Icons.home),
-            label: 'Home',
+        ),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bookmark_border_rounded),
-            activeIcon: Icon(Icons.bookmark_rounded),
-            label: 'Saved',
+          child: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            currentIndex: 0,
+            selectedItemColor:
+                isDark ? const Color(0xFF64B5F6) : Colors.blue.shade600,
+            unselectedItemColor:
+                isDark ? const Color(0xFF757575) : Colors.grey.shade500,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
+            unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w400),
+            onTap: (index) {
+              switch (index) {
+                case 0:
+                  break;
+                case 1:
+                  Get.toNamed(AppRoutes.BOOKMARK);
+                  break;
+                case 2:
+                  Get.toNamed(AppRoutes.PROFILE);
+                  break;
+              }
+            },
+            items: const [
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.home_rounded), label: 'Home'),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.bookmark_border_rounded), label: 'Saved'),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.person_outline_rounded), label: 'Profile'),
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline_rounded),
-            activeIcon: Icon(Icons.person_rounded),
-            label: 'Profile',
-          ),
-        ],
-      ),
-    );
+        ),
+      );
+    });
   }
 
   Widget _buildFloatingSearchButton() {
@@ -559,3 +611,122 @@ class HomePage extends GetView<HomeController> {
     }
   }
 }
+
+
+
+// Widget _buildModernAppBar() {
+//     return SliverAppBar(
+//       expandedHeight: 150,
+//       floating: false,
+//       pinned: true,
+//       elevation: 0,
+//       backgroundColor:
+//           Get.isDarkMode ? const Color(0xFF1F1F1F) : Colors.blue.shade600,
+//       flexibleSpace: LayoutBuilder(
+//         builder: (context, constraints) {
+//           // Calculate collapse ratio
+//           final expandedHeight = 120.0;
+//           final minHeight = kToolbarHeight + MediaQuery.of(context).padding.top;
+//           final currentHeight = constraints.maxHeight;
+
+//           // Calculate how much the app bar has collapsed (0.0 = fully expanded, 1.0 = fully collapsed)
+//           final collapseRatio =
+//               ((expandedHeight - currentHeight) / (expandedHeight - minHeight))
+//                   .clamp(0.0, 1.0);
+
+//           return FlexibleSpaceBar(
+//             title: Opacity(
+//               opacity: collapseRatio, // Title opacity based on collapse ratio
+//               child: Text(
+//                 'Newsly',
+//                 style: TextStyle(
+//                   color: Colors.white,
+//                   fontSize: 20,
+//                   fontWeight: FontWeight.bold,
+//                   letterSpacing: 0.5,
+//                 ),
+//               ),
+//             ),
+//             centerTitle: true,
+//             titlePadding: EdgeInsets.only(bottom: 16),
+//             background: Container(
+//               decoration: BoxDecoration(
+//                 gradient: LinearGradient(
+//                   begin: Alignment.topLeft,
+//                   end: Alignment.bottomRight,
+//                   colors: Get.isDarkMode
+//                       ? [
+//                           const Color(0xFF1F1F1F),
+//                           const Color(0xFF2C2C2C),
+//                           const Color(0xFF1A1A1A),
+//                         ]
+//                       : [
+//                           Colors.blue.shade600,
+//                           Colors.blue.shade800,
+//                           Colors.indigo.shade600,
+//                         ],
+//                 ),
+//               ),
+//               child: Padding(
+//                 padding: EdgeInsets.fromLTRB(20, 60, 20, 16),
+//                 child: Column(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   mainAxisAlignment: MainAxisAlignment.end,
+//                   children: [
+//                     Row(
+//                       children: [
+//                         Expanded(
+//                           child: Obx(() => Text(
+//                                 'Good ${_getGreeting()}, ${authController.user?.displayName?.split(' ').first ?? 'Reader'}!',
+//                                 style: TextStyle(
+//                                   fontSize: 22,
+//                                   fontWeight: FontWeight.bold,
+//                                   color: Colors.white,
+//                                 ),
+//                                 maxLines: 1,
+//                                 overflow: TextOverflow.ellipsis,
+//                               )),
+//                         ),
+//                         SizedBox(width: 12),
+//                         Container(
+//                           decoration: BoxDecoration(
+//                             color: Colors.white.withOpacity(0.2),
+//                             borderRadius: BorderRadius.circular(10),
+//                           ),
+//                           child: Obx(() => IconButton(
+//                                 icon: Icon(
+//                                   themeController.isDarkMode
+//                                       ? Icons.light_mode
+//                                       : Icons.dark_mode,
+//                                   color: Colors.white,
+//                                   size: 20,
+//                                 ),
+//                                 onPressed: themeController.toggleTheme,
+//                                 padding: EdgeInsets.all(8),
+//                                 constraints: BoxConstraints(
+//                                   minWidth: 36,
+//                                   minHeight: 36,
+//                                 ),
+//                               )),
+//                         ),
+//                       ],
+//                     ),
+//                     SizedBox(height: 6),
+//                     Text(
+//                       'Discover today\'s trending stories',
+//                       style: TextStyle(
+//                         fontSize: 13,
+//                         color: Colors.white.withOpacity(0.9),
+//                       ),
+//                       maxLines: 1,
+//                       overflow: TextOverflow.ellipsis,
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//           );
+//         },
+//       ),
+//     );
+//   }

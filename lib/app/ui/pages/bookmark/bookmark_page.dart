@@ -1,8 +1,8 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:newsly/app/controllers/bookmark_controller.dart';
-
-// import '../../controllers/bookmark_controller.dart';
 import '../../widgets/article_card.dart';
 
 class BookmarkPage extends GetView<BookmarkController> {
@@ -10,13 +10,15 @@ class BookmarkPage extends GetView<BookmarkController> {
   Widget build(BuildContext context) {
     Get.put(BookmarkController());
     
-    return Scaffold(
+    return Scaffold( 
       appBar: AppBar(
         title: Text('Bookmarks'),
-        elevation: 0,
-        backgroundColor: Colors.blue.shade600,
+        backgroundColor: Get.isDarkMode 
+            ? const Color(0xFF1F1F1F) 
+            : Colors.blue.shade600,
         foregroundColor: Colors.white,
         actions: [
+          
           Obx(() => controller.bookmarks.isNotEmpty
               ? IconButton(
                   icon: Icon(Icons.clear_all),
@@ -36,6 +38,7 @@ class BookmarkPage extends GetView<BookmarkController> {
             ],
           ),
         ),
+        
         child: Obx(() {
           if (controller.bookmarks.isEmpty) {
             return _buildEmptyState();
@@ -49,11 +52,12 @@ class BookmarkPage extends GetView<BookmarkController> {
               itemBuilder: (context, index) {
                 final article = controller.bookmarks[index];
                 return Dismissible(
-                  key: Key('bookmark_${article.title.hashCode}'), // Use article hash as key
+                  key: Key('bookmark_${article.title.hashCode.abs()}'),
                   direction: DismissDirection.endToStart,
                   background: _buildDismissBackground(),
                   confirmDismiss: (direction) => _showRemoveDialog(article),
-                  child: EnhancedArticleCard(article: article), // Removed index parameter
+                  onDismissed: (direction) => controller.removeBookmark(article),
+                  child: EnhancedArticleCard(article: article),
                 );
               },
             ),
@@ -63,7 +67,6 @@ class BookmarkPage extends GetView<BookmarkController> {
     );
   }
 
-  // ... rest of the methods remain the same (EmptyState, DismissBackground, etc.)
   Widget _buildEmptyState() {
     return Center(
       child: Column(
@@ -130,6 +133,13 @@ class BookmarkPage extends GetView<BookmarkController> {
           colors: [Colors.red.shade400, Colors.red.shade600],
         ),
         borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.red.withOpacity(0.2),
+            blurRadius: 8,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
       alignment: Alignment.centerRight,
       padding: EdgeInsets.only(right: 20),
@@ -155,7 +165,7 @@ class BookmarkPage extends GetView<BookmarkController> {
     );
   }
 
-  Future<bool?> _showRemoveDialog(article) {
+  Future<bool?> _showRemoveDialog(dynamic article) {
     return Get.dialog<bool>(
       AlertDialog(
         shape: RoundedRectangleBorder(
@@ -163,28 +173,47 @@ class BookmarkPage extends GetView<BookmarkController> {
         ),
         title: Row(
           children: [
-            Icon(Icons.bookmark_remove, color: Colors.red),
-            SizedBox(width: 8),
-            Text('Remove Bookmark'),
+            Container(
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.red.shade50,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(Icons.bookmark_remove, color: Colors.red, size: 20),
+            ),
+            SizedBox(width: 12),
+            Text(
+              'Remove Bookmark',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
           ],
         ),
         content: Text(
-          'Are you sure you want to remove this article from bookmarks?',
-          style: TextStyle(height: 1.5),
+          'Are you sure you want to remove "${article.title}" from your bookmarks?',
+          style: TextStyle(height: 1.5, fontSize: 16),
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back(result: false),
-            child: Text('Cancel'),
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            ),
+            child: Text(
+              'Cancel',
+              style: TextStyle(color: Colors.grey.shade600),
+            ),
           ),
           ElevatedButton(
             onPressed: () {
-              controller.removeBookmark(article);
               Get.back(result: true);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
             child: Text('Remove'),
           ),
@@ -201,19 +230,51 @@ class BookmarkPage extends GetView<BookmarkController> {
         ),
         title: Row(
           children: [
-            Icon(Icons.warning_amber, color: Colors.orange),
-            SizedBox(width: 8),
-            Text('Clear All Bookmarks'),
+            Container(
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.orange.shade50,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(Icons.warning_amber, color: Colors.orange, size: 20),
+            ),
+            SizedBox(width: 12),
+            Text(
+              'Clear All Bookmarks',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
           ],
         ),
-        content: Text(
-          'Are you sure you want to remove all bookmarks? This action cannot be undone.',
-          style: TextStyle(height: 1.5),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Use Obx here since we're accessing controller.bookmarks
+            Obx(() => Text(
+              'Are you sure you want to remove all ${controller.bookmarks.length} bookmarks?',
+              style: TextStyle(height: 1.5, fontSize: 16),
+            )),
+            SizedBox(height: 8),
+            Text(
+              'This action cannot be undone.',
+              style: TextStyle(
+                color: Colors.red,
+                fontWeight: FontWeight.w500,
+                fontSize: 14,
+              ),
+            ),
+          ],
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: Text('Cancel'),
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            ),
+            child: Text(
+              'Cancel',
+              style: TextStyle(color: Colors.grey.shade600),
+            ),
           ),
           ElevatedButton(
             onPressed: () {
@@ -223,6 +284,10 @@ class BookmarkPage extends GetView<BookmarkController> {
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
             child: Text('Clear All'),
           ),

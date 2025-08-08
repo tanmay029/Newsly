@@ -17,7 +17,7 @@ class ArticleDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     Get.put(ArticleController());
     final bookmarkController = Get.find<BookmarkController>();
-    
+
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -67,8 +67,8 @@ class ArticleDetailPage extends StatelessWidget {
         GetBuilder<BookmarkController>(
           builder: (controller) => IconButton(
             icon: Icon(
-              controller.isBookmarked(article) 
-                  ? Icons.bookmark 
+              controller.isBookmarked(article)
+                  ? Icons.bookmark
                   : Icons.bookmark_border,
               color: Colors.white,
             ),
@@ -143,26 +143,34 @@ class ArticleDetailPage extends StatelessWidget {
           ),
         ),
         SizedBox(height: 8),
-        Row(
+        Column(
           children: [
-            Icon(Icons.account_circle, size: 16, color: Colors.grey[600]),
-            SizedBox(width: 4),
-            Text(
-              'By ${article.author ?? 'Unknown'}',
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 14,
-              ),
+            Row(
+              children: [
+                Icon(Icons.account_circle, size: 16, color: Colors.grey[600]),
+                SizedBox(width: 4),
+                Text(
+                  'By ${article.author ?? 'Unknown'}',
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 14,
+                  ),
+                ),
+              ],
             ),
             SizedBox(width: 16),
-            Icon(Icons.source, size: 16, color: Colors.grey[600]),
-            SizedBox(width: 4),
-            Text(
-              article.source,
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 14,
-              ),
+            Row(
+              children: [
+                Icon(Icons.source, size: 16, color: Colors.grey[600]),
+                SizedBox(width: 4),
+                Text(
+                  article.source,
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 14,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -198,7 +206,7 @@ class ArticleDetailPage extends StatelessWidget {
 
   Widget _buildReadMoreButton() {
     if (article.url == null) return SizedBox.shrink();
-    
+
     return Container(
       width: double.infinity,
       child: ElevatedButton.icon(

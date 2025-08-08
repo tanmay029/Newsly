@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../data/models/article_model.dart';
@@ -25,13 +26,24 @@ class BookmarkController extends GetxController {
   }
 
   void toggleBookmark(Article article) {
+  try {
     if (isBookmarked(article)) {
       removeBookmark(article);
     } else {
       addBookmark(article);
     }
-    update(); // Update UI
+    update(); // Update GetBuilder widgets
+  } catch (e) {
+    print('Error toggling bookmark: $e');
+    Get.snackbar(
+      'Error',
+      'Failed to update bookmark. Please try again.',
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+      duration: const Duration(seconds: 3),
+    );
   }
+}
 
   void addBookmark(Article article) {
     try {
@@ -62,13 +74,13 @@ class BookmarkController extends GetxController {
   }
 
   bool isBookmarked(Article article) {
-    try {
-      return _storageService.isBookmarked(article);
-    } catch (e) {
-      print('Error checking bookmark status: $e');
-      return false;
-    }
+  try {
+    return _storageService.isBookmarked(article);
+  } catch (e) {
+    print('Error checking bookmark status in controller: $e');
+    return false;
   }
+}
 
   void clearAllBookmarks() {
     try {
