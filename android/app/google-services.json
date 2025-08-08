@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "861845318269",
+    "project_id": "newsly-90dbd",
+    "storage_bucket": "newsly-90dbd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:861845318269:android:06ff652c655401bd989f14",
+        "android_client_info": {
+          "package_name": "com.example.newsly"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "861845318269-okmg5glvvri354su7sslkd2hijg99ah5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXm-KIMuhWDbw2Lc2uiRcBQODoa_J3I3I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "861845318269-okmg5glvvri354su7sslkd2hijg99ah5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "861845318269-78s83vklds2aktnrsoi0tfg6eueqg6sr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tk.newsly"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:861845318269:android:8c37fbf0bcde9e27989f14",
+        "android_client_info": {
+          "package_name": "com.tk.newsly"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "861845318269-okmg5glvvri354su7sslkd2hijg99ah5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXm-KIMuhWDbw2Lc2uiRcBQODoa_J3I3I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "861845318269-okmg5glvvri354su7sslkd2hijg99ah5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "861845318269-78s83vklds2aktnrsoi0tfg6eueqg6sr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tk.newsly"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
