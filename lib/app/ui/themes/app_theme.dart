@@ -13,7 +13,7 @@ class AppTheme {
         elevation: 0,
         centerTitle: true,
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         elevation: 2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
@@ -67,7 +67,7 @@ class AppTheme {
       ),
 
       // Card Theme
-      cardTheme: const CardTheme(
+      cardTheme: const CardThemeData(
         elevation: 8,
         color: Color(0xFF1E1E1E), // Dark grey cards
         shadowColor: Color(0xFF000000),
@@ -204,7 +204,7 @@ class AppTheme {
       ),
 
       // Dialog Theme
-      dialogTheme: const DialogTheme(
+      dialogTheme: const DialogThemeData(
         backgroundColor: Color(0xFF1E1E1E),
         titleTextStyle: TextStyle(
           color: Color(0xFFE0E0E0),
