@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -7,7 +9,6 @@ import 'package:newsly/app/controllers/theme_controller.dart';
 import 'package:newsly/app/data/models/article_model.dart';
 import 'package:newsly/app/routes/app_routes.dart';
 import 'package:shimmer/shimmer.dart';
-
 import '../../widgets/article_card.dart';
 
 class HomePage extends GetView<HomeController> {
@@ -45,19 +46,17 @@ class HomePage extends GetView<HomeController> {
           Get.isDarkMode ? const Color(0xFF1F1F1F) : Colors.blue.shade600,
       flexibleSpace: LayoutBuilder(
         builder: (context, constraints) {
-          // Calculate collapse ratio
           final expandedHeight = 120.0;
           final minHeight = kToolbarHeight + MediaQuery.of(context).padding.top;
           final currentHeight = constraints.maxHeight;
 
-          // Calculate how much the app bar has collapsed (0.0 = fully expanded, 1.0 = fully collapsed)
           final collapseRatio =
               ((expandedHeight - currentHeight) / (expandedHeight - minHeight))
                   .clamp(0.0, 1.0);
 
           return FlexibleSpaceBar(
             title: Opacity(
-              opacity: collapseRatio, // Title opacity based on collapse ratio
+              opacity: collapseRatio, 
               child: Text(
                 'Newsly',
                 style: TextStyle(
@@ -460,7 +459,7 @@ class HomePage extends GetView<HomeController> {
                 itemBuilder: (context, index) {
                   final article = controller.liveArticles[index];
                   return EnhancedArticleCard(
-                      article: article); // Removed index parameter
+                      article: article); 
                 },
               );
             }),
@@ -519,7 +518,6 @@ class HomePage extends GetView<HomeController> {
 
   Widget _buildModernBottomNav() {
     return Obx(() {
-      // Wrap with Obx for theme reactivity
       final isDark = themeController.isDarkMode;
       return Container(
         decoration: BoxDecoration(
@@ -611,122 +609,3 @@ class HomePage extends GetView<HomeController> {
     }
   }
 }
-
-
-
-// Widget _buildModernAppBar() {
-//     return SliverAppBar(
-//       expandedHeight: 150,
-//       floating: false,
-//       pinned: true,
-//       elevation: 0,
-//       backgroundColor:
-//           Get.isDarkMode ? const Color(0xFF1F1F1F) : Colors.blue.shade600,
-//       flexibleSpace: LayoutBuilder(
-//         builder: (context, constraints) {
-//           // Calculate collapse ratio
-//           final expandedHeight = 120.0;
-//           final minHeight = kToolbarHeight + MediaQuery.of(context).padding.top;
-//           final currentHeight = constraints.maxHeight;
-
-//           // Calculate how much the app bar has collapsed (0.0 = fully expanded, 1.0 = fully collapsed)
-//           final collapseRatio =
-//               ((expandedHeight - currentHeight) / (expandedHeight - minHeight))
-//                   .clamp(0.0, 1.0);
-
-//           return FlexibleSpaceBar(
-//             title: Opacity(
-//               opacity: collapseRatio, // Title opacity based on collapse ratio
-//               child: Text(
-//                 'Newsly',
-//                 style: TextStyle(
-//                   color: Colors.white,
-//                   fontSize: 20,
-//                   fontWeight: FontWeight.bold,
-//                   letterSpacing: 0.5,
-//                 ),
-//               ),
-//             ),
-//             centerTitle: true,
-//             titlePadding: EdgeInsets.only(bottom: 16),
-//             background: Container(
-//               decoration: BoxDecoration(
-//                 gradient: LinearGradient(
-//                   begin: Alignment.topLeft,
-//                   end: Alignment.bottomRight,
-//                   colors: Get.isDarkMode
-//                       ? [
-//                           const Color(0xFF1F1F1F),
-//                           const Color(0xFF2C2C2C),
-//                           const Color(0xFF1A1A1A),
-//                         ]
-//                       : [
-//                           Colors.blue.shade600,
-//                           Colors.blue.shade800,
-//                           Colors.indigo.shade600,
-//                         ],
-//                 ),
-//               ),
-//               child: Padding(
-//                 padding: EdgeInsets.fromLTRB(20, 60, 20, 16),
-//                 child: Column(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   mainAxisAlignment: MainAxisAlignment.end,
-//                   children: [
-//                     Row(
-//                       children: [
-//                         Expanded(
-//                           child: Obx(() => Text(
-//                                 'Good ${_getGreeting()}, ${authController.user?.displayName?.split(' ').first ?? 'Reader'}!',
-//                                 style: TextStyle(
-//                                   fontSize: 22,
-//                                   fontWeight: FontWeight.bold,
-//                                   color: Colors.white,
-//                                 ),
-//                                 maxLines: 1,
-//                                 overflow: TextOverflow.ellipsis,
-//                               )),
-//                         ),
-//                         SizedBox(width: 12),
-//                         Container(
-//                           decoration: BoxDecoration(
-//                             color: Colors.white.withOpacity(0.2),
-//                             borderRadius: BorderRadius.circular(10),
-//                           ),
-//                           child: Obx(() => IconButton(
-//                                 icon: Icon(
-//                                   themeController.isDarkMode
-//                                       ? Icons.light_mode
-//                                       : Icons.dark_mode,
-//                                   color: Colors.white,
-//                                   size: 20,
-//                                 ),
-//                                 onPressed: themeController.toggleTheme,
-//                                 padding: EdgeInsets.all(8),
-//                                 constraints: BoxConstraints(
-//                                   minWidth: 36,
-//                                   minHeight: 36,
-//                                 ),
-//                               )),
-//                         ),
-//                       ],
-//                     ),
-//                     SizedBox(height: 6),
-//                     Text(
-//                       'Discover today\'s trending stories',
-//                       style: TextStyle(
-//                         fontSize: 13,
-//                         color: Colors.white.withOpacity(0.9),
-//                       ),
-//                       maxLines: 1,
-//                       overflow: TextOverflow.ellipsis,
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             ),
-//           );
-//         },
-//       ),
-//     );
-//   }

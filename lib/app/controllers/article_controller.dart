@@ -31,8 +31,6 @@ class ArticleController extends GetxController {
   }
 
   void shareArticle() {
-    // Implement share functionality if needed
-    // You can use the share_plus package for this
     Get.snackbar(
       'Share',
       'Share functionality would be implemented here',

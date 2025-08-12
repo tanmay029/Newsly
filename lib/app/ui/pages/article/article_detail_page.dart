@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart'; // Add this import
+// import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart'; 
 import 'package:newsly/app/controllers/article_controller.dart';
 import 'package:newsly/app/controllers/bookmark_controller.dart';
 import 'package:newsly/app/data/models/article_model.dart';
@@ -90,7 +90,7 @@ class ArticleDetailPage extends StatelessWidget {
           children: [
             _buildHeader(),
             SizedBox(height: 16),
-            _buildSummarySection(), // Updated to show summary instead of full content
+            _buildSummarySection(), 
             SizedBox(height: 16),
             _buildMetaInfo(),
             SizedBox(height: 24),
@@ -183,7 +183,7 @@ class ArticleDetailPage extends StatelessWidget {
     );
   }
 
-  // Updated to show summary instead of full content
+  
   Widget _buildSummarySection() {
     final summary = _generateSummary(article.description, article.content);
     
@@ -304,8 +304,8 @@ class ArticleDetailPage extends StatelessWidget {
       width: double.infinity,
       child: ElevatedButton.icon(
         onPressed: () {
-          print('Article URL: ${article.url}'); // Debug log
-          _launchURL(article.url); // Direct call to _launchURL
+          print('Article URL: ${article.url}'); 
+          _launchURL(article.url); 
         },
         icon: Icon(Icons.open_in_new),
         label: Text('Read Full Article'),
@@ -322,7 +322,7 @@ class ArticleDetailPage extends StatelessWidget {
     );
   }
 
-  // Add the _launchURL method
+  
   Future<void> _launchURL(String? url) async {
   print('Attempting to launch URL: $url');
   
@@ -338,7 +338,7 @@ class ArticleDetailPage extends StatelessWidget {
   }
 
   try {
-    // Ensure URL has proper protocol
+    
     String formattedUrl = url;
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       formattedUrl = 'https://$url';
@@ -347,7 +347,7 @@ class ArticleDetailPage extends StatelessWidget {
     final uri = Uri.parse(formattedUrl);
     print('Parsed URI: $uri');
     
-    // Try launching without checking canLaunchUrl first
+    
     try {
       print('Attempting direct launch with externalApplication mode');
       bool launched = await launchUrl(
@@ -362,7 +362,7 @@ class ArticleDetailPage extends StatelessWidget {
     } catch (e) {
       print('External launch failed: $e, trying platformDefault');
       
-      // Fallback to platform default
+      
       bool launched = await launchUrl(
         uri,
         mode: LaunchMode.platformDefault,
@@ -377,7 +377,7 @@ class ArticleDetailPage extends StatelessWidget {
   } catch (e) {
     print('All launch attempts failed: $e');
     
-    // Show error with URL for manual copying
+    
     Get.defaultDialog(
       title: 'Unable to Open Article',
       middleText: 'Could not open the article automatically. You can copy the URL below:',
@@ -398,10 +398,7 @@ class ArticleDetailPage extends StatelessWidget {
   }
 }
 
-// Add this helper method
 void _copyUrlToClipboard(String url) {
-  // You'll need to add clipboard package to pubspec.yaml
-  // flutter/services provides Clipboard
   Clipboard.setData(ClipboardData(text: url));
   Get.snackbar(
     'Copied',
@@ -412,11 +409,8 @@ void _copyUrlToClipboard(String url) {
 }
 
 
-  // Helper methods for formatting
   String _generateSummary(String description, String? content) {
-    // Use description as primary summary
     if (description.isNotEmpty && !description.contains('[Removed]')) {
-      // Limit to approximately 3 sentences or 200 characters
       List<String> sentences = description.split('. ');
       if (sentences.length > 3) {
         return sentences.take(3).join('. ') + '.';
@@ -427,7 +421,6 @@ void _copyUrlToClipboard(String url) {
       return description;
     }
     
-    // Fallback to content if description is not available
     if (content != null && content.isNotEmpty && !content.contains('[Removed]')) {
       List<String> sentences = content.split('. ');
       if (sentences.length > 2) {
@@ -447,7 +440,6 @@ void _copyUrlToClipboard(String url) {
       return 'Unknown Author';
     }
     
-    // Split by common separators
     List<String> authors = author.split(RegExp(r',|&|\band\b')).map((a) => a.trim()).toList();
     authors = authors.where((a) => a.isNotEmpty).toList();
     
@@ -465,7 +457,6 @@ void _copyUrlToClipboard(String url) {
       return 'Unknown Source';
     }
     
-    // Split by common separators
     List<String> sources = source.split(RegExp(r',|&|\band\b')).map((s) => s.trim()).toList();
     sources = sources.where((s) => s.isNotEmpty).toList();
     

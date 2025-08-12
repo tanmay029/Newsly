@@ -1,10 +1,9 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:newsly/app/controllers/auth_controller.dart';
 import 'package:newsly/app/routes/app_routes.dart';
-
-// import '../../controllers/auth_controller.dart';
-// import '../../routes/app_routes.dart';
 
 class SplashPage extends StatefulWidget {
   @override

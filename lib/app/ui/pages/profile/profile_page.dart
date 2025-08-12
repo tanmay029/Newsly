@@ -3,10 +3,8 @@ import 'package:get/get.dart';
 import 'package:newsly/app/controllers/auth_controller.dart';
 import 'package:newsly/app/controllers/bookmark_controller.dart';
 import 'package:newsly/app/controllers/theme_controller.dart';
-
-// import '../../controllers/auth_controller.dart';
-// import '../../controllers/theme_controller.dart';
-// import '../../controllers/bookmark_controller.dart';
+import 'package:newsly/app/controllers/donation_controller.dart';
+import 'package:newsly/app/ui/pages/donation/donation_page.dart';
 
 class ProfilePage extends StatelessWidget {
   final AuthController authController = Get.find<AuthController>();
@@ -156,6 +154,15 @@ class ProfilePage extends StatelessWidget {
           )),
         ),
         _buildMenuItem(
+          'Buy me a Coffee ☕',
+          'Support Newsly development',
+          Icons.local_cafe,
+          onTap: () {
+            Get.put(DonationController()); 
+            Get.to(() => DonationPage());
+          },
+        ),
+        _buildMenuItem(
           'Notifications',
           'Manage your notification preferences',
           Icons.notifications,
@@ -202,10 +209,10 @@ class ProfilePage extends StatelessWidget {
         leading: Container(
           padding: EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.blue.shade50,
+            color: _getIconBackgroundColor(icon),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, color: Colors.blue),
+          child: Icon(icon, color: _getIconColor(icon)),
         ),
         title: Text(title),
         subtitle: Text(subtitle),
@@ -213,6 +220,16 @@ class ProfilePage extends StatelessWidget {
         onTap: onTap,
       ),
     );
+  }
+
+  Color _getIconColor(IconData icon) {
+    if (icon == Icons.local_cafe) return Colors.orange;
+    return Colors.blue;
+  }
+
+  Color _getIconBackgroundColor(IconData icon) {
+    if (icon == Icons.local_cafe) return Colors.orange.shade50;
+    return Colors.blue.shade50;
   }
 
   Widget _buildLogoutButton() {

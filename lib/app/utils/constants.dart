@@ -1,7 +1,9 @@
 class Constants {
   // API Configuration
   static const String baseUrl = 'https://newsapi.org/v2';
-  static const String newsApiKey = '8703dc280cac4bfb8d1461fabafc135e'; // Replace with your actual API key
+  static const String newsApiKey = '8703dc280cac4bfb8d1461fabafc135e';
+  
+
   
   // App Configuration
   static const String appName = 'Newsly';

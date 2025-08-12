@@ -33,7 +33,7 @@ class AuthController extends GetxController {
       
       await credential.user?.updateDisplayName(name);
       
-      // Navigate to HOME page after successful registration
+      
       Get.offAllNamed(AppRoutes.HOME);
       Get.snackbar(
         'Success',
@@ -62,7 +62,7 @@ class AuthController extends GetxController {
         password: password,
       );
       
-      // Navigate to HOME page after successful login
+      
       Get.offAllNamed(AppRoutes.HOME);
       Get.snackbar(
         'Success',

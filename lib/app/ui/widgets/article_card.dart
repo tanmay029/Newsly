@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
 import '../../data/models/article_model.dart';
 import '../../controllers/bookmark_controller.dart';
 import '../../routes/app_routes.dart';

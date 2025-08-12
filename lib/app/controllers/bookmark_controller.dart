@@ -32,7 +32,7 @@ class BookmarkController extends GetxController {
     } else {
       addBookmark(article);
     }
-    update(); // Update GetBuilder widgets
+    update();
   } catch (e) {
     print('Error toggling bookmark: $e');
     Get.snackbar(

@@ -8,7 +8,7 @@ import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
 import 'app/ui/themes/app_theme.dart';
 import 'app/controllers/theme_controller.dart';
-import 'app/data/services/storage_service.dart'; // Add this import
+import 'app/data/services/storage_service.dart'; 
 import 'firebase_options.dart';
 
 void main() async {
@@ -20,7 +20,6 @@ void main() async {
   
   await GetStorage.init();
   
-  // Initialize StorageService before running the app
   Get.put<StorageService>(StorageService(), permanent: true);
   
   runApp(NewslyApp());
@@ -39,7 +38,7 @@ void clearCorruptedBookmarkData() {
 class NewslyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Now ThemeController can safely access StorageService
+    Get.put(GetStorage());
     final themeController = Get.put(ThemeController(), permanent: true);
     
     return Obx(() => GetMaterialApp(

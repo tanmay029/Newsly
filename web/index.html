@@ -18,7 +18,10 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="description" content="Newsly - Your personalized news app">
+  
+  <!-- Add viewport meta tag for responsive design -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
@@ -29,10 +32,76 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>newsly</title>
+  <title>Newsly</title>
+  
+  <!-- Firebase v9.15.0 SDK - Compatible with firebase_auth_web 5.2.4 -->
+  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+  
+  <!-- Your Firebase Config - Replace with your actual configuration -->
+  <script>
+    const firebaseConfig = {
+      // Replace these with your actual Firebase configuration values
+      apiKey: "your-api-key-here",
+      authDomain: "your-project-id.firebaseapp.com",
+      projectId: "your-project-id",
+      storageBucket: "your-project-id.appspot.com",
+      messagingSenderId: "your-sender-id",
+      appId: "your-app-id"
+    };
+    
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
+  
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
+  <!-- Loading indicator -->
+  <div id="loading" style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  ">
+    <div style="text-align: center;">
+      <div style="
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 2s linear infinite;
+        margin: 0 auto 20px;
+      "></div>
+      <p style="color: #666; font-family: Arial, sans-serif;">Loading Newsly...</p>
+    </div>
+  </div>
+
+  <style>
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+
   <script src="flutter_bootstrap.js" async></script>
+  
+  <script>
+    // Hide loading indicator when Flutter app is ready
+    window.addEventListener('flutter-first-frame', function () {
+      const loading = document.getElementById('loading');
+      if (loading) {
+        loading.remove();
+      }
+    });
+  </script>
 </body>
 </html>
+
